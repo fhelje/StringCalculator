@@ -1,0 +1,5 @@
+framework: jasmine
+src_files:
+- lib/require.js
+- Src/**/*.js
+- spec/**/*.js

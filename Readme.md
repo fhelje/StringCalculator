@@ -1,0 +1,1 @@
+# String calculator kata in TypeScript #
