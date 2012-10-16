@@ -36,7 +36,17 @@ var Kata;
         };
         StringCalculator.prototype.addSpecialSeparator = function (nums) {
             var specialSeparator = nums[2];
-            this.separators.push(specialSeparator);
+            var parts = nums.split('\n', 1);
+            var firstbracket = parts[0].indexOf('[');
+            if(firstbracket > 0) {
+                var lastbracket = parts[0].lastIndexOf(']');
+                var sepParts = parts[0].substring(firstbracket + 1, lastbracket).split('][');
+                for(var i = 0; i < sepParts.length; i++) {
+                    this.separators.push(sepParts[i]);
+                }
+            } else {
+                this.separators.push(specialSeparator);
+            }
         };
         StringCalculator.prototype.stripFirstLine = function (str) {
             return str.substring(4);

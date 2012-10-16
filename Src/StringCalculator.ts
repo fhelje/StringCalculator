@@ -38,7 +38,18 @@ module Kata {
         }
         addSpecialSeparator(nums: string) {
             var specialSeparator = nums[2];
-            this.separators.push(specialSeparator);
+            var parts: string[] = nums.split('\n', 1);
+            var firstbracket = parts[0].indexOf('[');
+            if (firstbracket > 0) {
+                var lastbracket = parts[0].lastIndexOf(']');
+                var sepParts = parts[0].substring(firstbracket + 1, lastbracket).split('][');
+                for (var i: number = 0; i < sepParts.length; i++) {
+                    this.separators.push(sepParts[i]);
+                }
+            }
+            else {
+                this.separators.push(specialSeparator);
+            }
         }
         stripFirstLine(str: string): string {
             return str.substring(4)

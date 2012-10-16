@@ -40,17 +40,20 @@ describe("String calculator", function () {
     describe("Any separator seperated values", function () {
         stringShouldHaveSum("1\n2", 3);
         stringShouldHaveSum("1\n2,3", 6);
+    });
+    describe("Special separator", function () {
         stringShouldHaveSum("//;\n1;2", 3);
         stringShouldHaveSum("//;\n1;2,3", 6);
         stringShouldHaveSum("//;\n1;2,3\n4;5", 15);
+        stringShouldHaveSum("//[***]\n1***2", 3);
+        stringShouldHaveSum("//[*][|]\n1*2|3", 6);
+        stringShouldHaveSum("//[**][||]\n1**2||3", 6);
     });
     describe("Negativ numbers not allowed", function () {
         stringShouldThrow("-1", "No negative numbers allowed");
         stringShouldThrow("1,-2", "No negative numbers allowed");
         stringShouldThrow("//;\n1;2,3\n4;-5", "No negative numbers allowed");
     });
-    describe("Numbers bigger than 1000 should be ignored", function () {
-        stringShouldHaveSum("1001", 0);
-        stringShouldHaveSum("1,1001", 1);
+    describe("Negativ numbers not allowed", function () {
     });
 });
