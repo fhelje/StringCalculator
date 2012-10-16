@@ -13,18 +13,34 @@ module Kata {
         };
 
         calculate(numbers: string): number {
-            if (!numbers) return 0;
-            if (numbers.length === 1) {
-                return parseInt(numbers || 0) 
-            }
-            if (this.hasSpecialSeparator(numbers)) {
-                this.addSpecialSeparator(numbers);
-                var numbers = this.stripFirstLine(numbers);
-            }
+            if (this.isNullOrEmpty(numbers)) return 0;
+            
+            this.addSpecialDelimiters(numbers);
+            
+            numbers = this.removeBracketDelimitersIfExists(numbers);
+
             var items: string[] = this.getParts([numbers],this.separators);
+
             this.throwIfNegative(items);
+            
             var nums:number[] = this.removeNumbersLargerThan100(items);
+            
             return this.calculateSumOfParts(nums);
+        }
+        removeBracketDelimitersIfExists(value: string): string {
+            if (this.hasSpecialSeparator(value)) {
+                return this.stripFirstLine(value);
+            }
+            return value;
+        }
+        addSpecialDelimiters(value: string) {
+            if (this.hasSpecialSeparator(value)) {
+                this.addSpecialSeparator(value);
+                var numbers = this.stripFirstLine(value);
+            }
+        }
+        isNullOrEmpty(value: string):bool {
+            return !value;
         }
         removeNumbersLargerThan100(items: string[]) {
             var retval: number[] = new Array();
@@ -37,19 +53,28 @@ module Kata {
             return retval;
         }
         addSpecialSeparator(nums: string) {
-            var specialSeparator = nums[2];
-            var parts: string[] = nums.split('\n', 1);
-            var firstbracket = parts[0].indexOf('[');
-            if (firstbracket > 0) {
-                var lastbracket = parts[0].lastIndexOf(']');
-                var sepParts = parts[0].substring(firstbracket + 1, lastbracket).split('][');
+            var firstLine: string = this.getFirstLine(nums);
+            if (this.hasBracketDelimiter(firstLine)) {
+                var sepParts = this.getBracketDelimiters(firstLine);
                 for (var i: number = 0; i < sepParts.length; i++) {
                     this.separators.push(sepParts[i]);
                 }
             }
             else {
-                this.separators.push(specialSeparator);
+                this.separators.push(nums[2]);
             }
+        }
+        getBracketDelimiters(value: string): string[]{
+                var firstbracket = value.indexOf('[');
+                var lastbracket = value.lastIndexOf(']');
+                
+            return value.substring(firstbracket + 1, lastbracket).split('][');
+        }
+        getFirstLine(value: string): string {
+            return value.split('\n', 1)[0];
+        }
+        hasBracketDelimiter(delimiterString: string): bool {
+            return delimiterString.indexOf('[') > -1
         }
         stripFirstLine(str: string): string {
             return str.substring(4)

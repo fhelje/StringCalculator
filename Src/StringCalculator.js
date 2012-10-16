@@ -7,22 +7,32 @@ var Kata;
             this.separators.push('\n');
         }
         StringCalculator.prototype.calculate = function (numbers) {
-            if(!numbers) {
+            if(this.isNullOrEmpty(numbers)) {
                 return 0;
             }
-            if(numbers.length === 1) {
-                return parseInt(numbers || 0);
-            }
-            if(this.hasSpecialSeparator(numbers)) {
-                this.addSpecialSeparator(numbers);
-                var numbers = this.stripFirstLine(numbers);
-            }
+            this.addSpecialDelimiters(numbers);
+            numbers = this.removeBracketDelimitersIfExists(numbers);
             var items = this.getParts([
                 numbers
             ], this.separators);
             this.throwIfNegative(items);
             var nums = this.removeNumbersLargerThan100(items);
             return this.calculateSumOfParts(nums);
+        };
+        StringCalculator.prototype.removeBracketDelimitersIfExists = function (value) {
+            if(this.hasSpecialSeparator(value)) {
+                return this.stripFirstLine(value);
+            }
+            return value;
+        };
+        StringCalculator.prototype.addSpecialDelimiters = function (value) {
+            if(this.hasSpecialSeparator(value)) {
+                this.addSpecialSeparator(value);
+                var numbers = this.stripFirstLine(value);
+            }
+        };
+        StringCalculator.prototype.isNullOrEmpty = function (value) {
+            return !value;
         };
         StringCalculator.prototype.removeNumbersLargerThan100 = function (items) {
             var retval = new Array();
@@ -35,18 +45,26 @@ var Kata;
             return retval;
         };
         StringCalculator.prototype.addSpecialSeparator = function (nums) {
-            var specialSeparator = nums[2];
-            var parts = nums.split('\n', 1);
-            var firstbracket = parts[0].indexOf('[');
-            if(firstbracket > 0) {
-                var lastbracket = parts[0].lastIndexOf(']');
-                var sepParts = parts[0].substring(firstbracket + 1, lastbracket).split('][');
+            var firstLine = this.getFirstLine(nums);
+            if(this.hasBracketDelimiter(firstLine)) {
+                var sepParts = this.getBracketDelimiters(firstLine);
                 for(var i = 0; i < sepParts.length; i++) {
                     this.separators.push(sepParts[i]);
                 }
             } else {
-                this.separators.push(specialSeparator);
+                this.separators.push(nums[2]);
             }
+        };
+        StringCalculator.prototype.getBracketDelimiters = function (value) {
+            var firstbracket = value.indexOf('[');
+            var lastbracket = value.lastIndexOf(']');
+            return value.substring(firstbracket + 1, lastbracket).split('][');
+        };
+        StringCalculator.prototype.getFirstLine = function (value) {
+            return value.split('\n', 1)[0];
+        };
+        StringCalculator.prototype.hasBracketDelimiter = function (delimiterString) {
+            return delimiterString.indexOf('[') > -1;
         };
         StringCalculator.prototype.stripFirstLine = function (str) {
             return str.substring(4);
